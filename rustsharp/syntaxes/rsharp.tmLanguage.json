@@ -1,0 +1,74 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "RustSharp",
+	"patterns": [
+		{
+			"include": "#comments"
+		},
+		{
+			"include": "#operators"
+		},
+		{
+			"include": "#keywords"
+		},
+		{
+			"include": "#strings"
+		},
+		{
+			"include": "#print"
+		},
+		{
+			"include": "#punctuation"
+		}
+	],
+	"repository": {
+		"comments": {
+			"patterns": [{
+				"name": "comment.line",
+				"match": "\\s*//.*"
+			}]
+		},
+		"operators": {
+			"patterns": [
+				{
+					"name": "keyword.operator.numeric",
+					"match": "([+]|[-]|[*]|[/])"
+				},
+				{
+					"name": "keyword.operator.boolean",
+					"match": "([&]{2}|[|]{2})"
+				}
+			]
+		},
+		"keywords": {
+			"patterns": [{
+				"name": "keyword.control.rsharp",
+				"match": "\\b(let)\\b"
+			}]
+		},
+		"print": {
+			"patterns": [{
+				"name": "entity.name.function",
+				"match": "print"
+			}]
+		},
+		"strings": {
+			"name": "string.quoted.double.rsharp",
+			"begin": "\"",
+			"end": "\"",
+			"patterns": [
+				{
+					"name": "constant.character.escape.rsharp",
+					"match": "\\\\."
+				}
+			]
+		},
+		"punctuation": {
+			"patterns": [{
+				"name": "punctuation.semi",
+				"match": ";"
+			}]
+		}
+	},
+	"scopeName": "source.rsharp"
+}

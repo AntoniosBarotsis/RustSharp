@@ -1,0 +1,5 @@
+// Comments
+let x = 41 && true;
+let y = 1 + x;
+
+print(y);

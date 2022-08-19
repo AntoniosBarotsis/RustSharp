@@ -1,0 +1,5 @@
+tasks:
+- name: Format
+  command: cargo fmt
+  outputEnabled: false
+  alwaysRun: false

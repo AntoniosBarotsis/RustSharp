@@ -1,0 +1,73 @@
+use crate::ast::*;
+
+grammar;
+
+pub Program: Program = {
+  <stmts:Statement*> => Program::Body { stmts },
+}
+
+pub Statement: Statement = {
+  "let" <start:@L> <identifier:Identifier> <end:@R> "=" <rhs:Expr> ";" => Statement::Declare{ identifier: Identifier { text: identifier, source_pos: SourcePos { start, end } }, rhs },
+  <expr:Expr> ";" => Statement::Expr { expr },
+}
+
+pub Expr: Expr = {
+  // "let" <name:r"[a-z][a-zA-Z0-9_]+"> "=" <value:Expr> => Expr::Variable { name, value }
+  "print(" <t:Term> ")" => Expr::Print { expr: Box::new(t) },
+  
+  <lhs:Expr> <start:@L> "&&" <end:@R> <rhs:Factor> => Expr::BinaryOp { op: BinaryOp::And { source_pos: SourcePos { start, end } }, lhs: Box::new(lhs), rhs: Box::new(rhs)},
+  <lhs:Expr> <start:@L> "||" <end:@R> <rhs:Factor> => Expr::BinaryOp { op: BinaryOp::Or { source_pos: SourcePos { start, end } },  lhs: Box::new(lhs), rhs: Box::new(rhs)},
+
+  <expr:Term> => expr,
+}
+
+pub Term: Expr = {
+  <lhs:Term> <start:@L> "+"  <end:@R> <rhs:Factor> => Expr::BinaryOp { op: BinaryOp::Add { source_pos: SourcePos { start, end } }, lhs: Box::new(lhs), rhs: Box::new(rhs)},
+  <lhs:Term> <start:@L> "-"  <end:@R> <rhs:Factor> => Expr::BinaryOp { op: BinaryOp::Sub { source_pos: SourcePos { start, end } }, lhs: Box::new(lhs), rhs: Box::new(rhs)},
+
+  <expr:Factor> => expr
+}
+
+pub Factor: Expr = {
+  <lhs:Factor> <start:@L> "*"  <end:@R> <rhs:Expr_> => Expr::BinaryOp { op: BinaryOp::Mul { source_pos: SourcePos { start, end } }, lhs: Box::new(lhs), rhs: Box::new(rhs)},
+  <lhs:Factor> <start:@L> "/"  <end:@R> <rhs:Expr_> => Expr::BinaryOp { op: BinaryOp::Div { source_pos: SourcePos { start, end } }, lhs: Box::new(lhs), rhs: Box::new(rhs)},
+
+  <expr:Application> => expr,
+}
+
+pub Application: Expr = {
+  <expr:Expr_> => expr,
+}
+
+pub Expr_: Expr = {
+  <IntLiteral>,
+  <BoolLiteral>,
+
+  <start:@L> <s:StrInternal> <end:@R> => Expr::String { text: s.to_string(), source_pos: SourcePos { start, end }},
+  <start:@L> <s:Identifier> <end:@R> => Expr::Identifier(Identifier { text: s.to_string(), source_pos: SourcePos { start, end }}),
+  "(" <e:Expr> ")" => Expr::ParenthesizedExpression { expr: Box::new(e) },
+}
+
+IntLiteral: Expr = {
+  <start:@L> <n:r"[0-9]+"> <end:@R> => Expr::Int {n: n.parse().unwrap(), source_pos: SourcePos { start, end }},
+}
+
+BoolLiteral: Expr = {
+  <start:@L> "true"  <end:@R> => Expr::Bool {b: true, source_pos: SourcePos { start, end }},
+  <start:@L> "false" <end:@R> => Expr::Bool {b: false, source_pos: SourcePos { start, end }},
+}
+
+StrInternal: String = {
+  <s:r#""[^"']*""#> => s.to_owned()
+}
+
+Identifier: String = {
+  <s:r"[a-z][a-z0-9]*"> => s.to_owned()
+}
+
+match {
+  r"\s*" => {},
+  r"//[^\n\r]*[\n\r]*" => {},
+  _,
+}
+

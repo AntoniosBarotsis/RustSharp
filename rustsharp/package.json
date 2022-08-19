@@ -1,0 +1,25 @@
+{
+  "name": "rustsharp",
+  "displayName": "RustSharp",
+  "description": "A syntax highlighter for my experimental programming language, RustSharp.",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.70.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [{
+      "id": "rsharp",
+      "aliases": ["RustSharp", "rsharp"],
+      "extensions": ["rsharp"],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "rsharp",
+      "scopeName": "source.rsharp",
+      "path": "./syntaxes/rsharp.tmLanguage.json"
+    }]
+  }
+}
