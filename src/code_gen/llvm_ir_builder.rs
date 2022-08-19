@@ -4,8 +4,8 @@ use super::llvm_context::{Instruction, LLVMStatement, LLVMType};
 /// This is very likely to change later as returning strings is weird.
 /// Can also return string error message but that shouldn't happen.
 pub(crate) fn stringify_instructions(
-  global_instructions: Vec<Instruction>,
-  main_instructions: Vec<Instruction>,
+  global_instructions: &Vec<Instruction>,
+  main_instructions: &Vec<Instruction>,
 ) -> Result<(String, String), String> {
   let mut global = String::new();
   let mut main = String::new();
@@ -73,21 +73,21 @@ pub(crate) fn stringify_instructions(
 }
 
 /// Stringifies a statement.
-pub(crate) fn stringify_llvm_statement(expr: LLVMStatement) -> String {
+pub(crate) fn stringify_llvm_statement(expr: &LLVMStatement) -> String {
   match expr {
     LLVMStatement::I32Literal(n) => format!("add i32 {}, 0", n),
     LLVMStatement::Print { expr_type, expr } => todo!(),
     LLVMStatement::Addition(x, y) => format!(
       "add i32 {}, {}",
-      stringify_llvm_numeric(*x),
-      stringify_llvm_numeric(*y)
+      stringify_llvm_numeric(x),
+      stringify_llvm_numeric(y)
     ),
-    LLVMStatement::VariableDeclaration(v) => v.identifier,
+    LLVMStatement::VariableDeclaration(v) => v.identifier.to_owned(),
   }
 }
 
 /// Stringifies a numeric statement.
-pub(crate) fn stringify_llvm_numeric(expr: LLVMStatement) -> String {
+pub(crate) fn stringify_llvm_numeric(expr: &LLVMStatement) -> String {
   match expr {
     LLVMStatement::I32Literal(n) => n.to_string(),
     LLVMStatement::Addition(x, y) => todo!(),

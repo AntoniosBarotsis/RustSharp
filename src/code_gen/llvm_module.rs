@@ -60,7 +60,7 @@ impl LLVMProgramBuilder {
               LLVMType::Array(_) => todo!(),
             }
           }
-          let str = llvm_ir_builder::stringify_llvm_statement(*expr.clone());
+          let str = llvm_ir_builder::stringify_llvm_statement(&expr);
           let str = match *expr {
             LLVMStatement::VariableDeclaration(_) => "%",
             _ => "",
@@ -73,7 +73,7 @@ impl LLVMProgramBuilder {
         LLVMStatement::VariableDeclaration(variable) => {
           let name = variable.identifier;
           let value_type = variable.value_type;
-          let value = llvm_ir_builder::stringify_llvm_statement(variable.rhs);
+          let value = llvm_ir_builder::stringify_llvm_statement(&variable.rhs);
 
           let var = LocalVariable {
             name,
@@ -150,8 +150,8 @@ impl LLVMProgramBuilder {
     let mut res = String::new();
 
     match llvm_ir_builder::stringify_instructions(
-      self.global_instructions.to_owned(),
-      self.main_instructions.to_owned(),
+      &self.global_instructions,
+      &self.main_instructions,
     ) {
       Ok((global, main)) => {
         res.push_str(&global);
