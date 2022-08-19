@@ -9,6 +9,10 @@ use super::{
 };
 
 impl LLVMProgramBuilder {
+  pub fn new() -> Self {
+    Self::default()
+  }
+
   pub fn generate_llvm(&mut self, prog: BoundProgram) {
     let statements = match prog {
       BoundProgram::Body { stmts } => stmts,

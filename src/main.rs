@@ -30,15 +30,15 @@ fn read_test(parser: &ProgramParser) {
   let contents =
     std::fs::read_to_string(file_path).unwrap_or_else(|_| panic!("Unable to read {}", file_path));
 
-  let mut binder = Binder::default();
-  let mut llvm_builder = LLVMProgramBuilder::default();
+  let mut binder = Binder::new();
+  let mut llvm_builder = LLVMProgramBuilder::new();
   parse_input(parser, &contents, &mut binder, &mut llvm_builder);
 }
 
 /// Runs a Read Eval Print Loop. Enter an empty string to exit.
 fn read_repl(parser: &ProgramParser) {
-  let mut binder = Binder::default();
-  let mut llvm_builder = LLVMProgramBuilder::default();
+  let mut binder = Binder::new();
+  let mut llvm_builder = LLVMProgramBuilder::new();
 
   loop {
     print!("> ");
@@ -73,9 +73,7 @@ fn parse_input(
   }
 
   // Bind
-  // let binder = Binder::default();
   let bind_result = binder.bind(parsed_input.as_ref().unwrap());
-  // let bind_result = Binder::bind(parsed_input.as_ref().unwrap());
 
   if let Err(errs) = bind_result {
     for err in errs.expr_errors {

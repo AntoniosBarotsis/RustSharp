@@ -10,6 +10,10 @@ pub struct Binder {
 }
 
 impl Binder {
+  pub fn new() -> Self {
+    Self::default()
+  }
+
   /// Binds the program.
   pub fn bind(&mut self, prog: &Program) -> Result<BoundProgram, ProgramError> {
     match prog {
